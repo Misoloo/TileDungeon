@@ -1,0 +1,68 @@
+package com.tiledungeon.main;
+import java.util.Random;
+
+public class Spawn {
+	
+	private Handler handler;
+	private Player player;
+	private Game game;
+	public Boolean bossSpawned = false;
+	
+	private Random r = new Random();
+
+	public Spawn(Handler handler, Player player, Game game) {
+		this.handler = handler;
+		this.player = player;
+		this.game = game;
+	}
+
+	public void tick() {
+		if(bossSpawned == false){
+			if(player.bossesKilled == 0 && player.enemiesKilled >= 20){
+				bossSpawned = true;
+				handler.addEntity(new Turret(Game.WIDTH/2 - 32, Game.HEIGHT/2 - 32, 0, 0, EntityID.Turret, 100, 100, 1, player, handler, this, game));
+			}else if(player.bossesKilled == 1 && player.enemiesKilled >= 50){
+				bossSpawned = true;
+				handler.addEntity(new Turret(Game.WIDTH/2 - 32, Game.HEIGHT/2 - 32, 0, 0, EntityID.Turret, 150, 150, 1, player, handler, this, game));
+			}else if(player.bossesKilled == 2 && player.enemiesKilled >= 100){
+				bossSpawned = true;
+				handler.addEntity(new Turret(Game.WIDTH/2 - 32, Game.HEIGHT/2 - 32, 0, 0, EntityID.Turret, 200, 200, 1, player, handler, this, game));
+			}else if(player.bossesKilled == 3 && player.enemiesKilled >= 150){
+				bossSpawned = true;
+				handler.addEntity(new Turret(Game.WIDTH/2 - 32, Game.HEIGHT/2 - 32, 0, 0, EntityID.Tank, 250, 250, 1, player, handler, this, game));
+			}else if(player.bossesKilled == 4 && player.enemiesKilled >= 200){
+				bossSpawned = true;
+				handler.addEntity(new Tank(Game.WIDTH/2 - 32, Game.HEIGHT/2 - 32, 0, 0, EntityID.Tank, 300, 300, 1, player, handler, this, game));
+			}else if(player.bossesKilled == 5 && player.enemiesKilled >= 300){
+				bossSpawned = true;
+				handler.addEntity(new Tank(Game.WIDTH/2 - 32, Game.HEIGHT/2 - 32, 0, 0, EntityID.Tank, 350, 350, 1, player, handler, this, game));
+			}else if(player.bossesKilled == 6 && player.enemiesKilled >= 400){
+				bossSpawned = true;
+				handler.addEntity(new Tank(Game.WIDTH/2 - 32, Game.HEIGHT/2 - 32, 0, 0, EntityID.Tank, 400, 400, 1, player, handler, this, game));
+			}else if(player.bossesKilled == 7 && player.enemiesKilled >= 500){
+				bossSpawned = true;
+				handler.addEntity(new Tank(Game.WIDTH/2 - 32, Game.HEIGHT/2 - 32, 0, 0, EntityID.Tank, 450, 450, 1, player, handler, this, game));
+			}
+		}
+	}
+
+	public void randomTick() {
+		
+		int random = r.nextInt(player.bossesKilled + 1);
+		if(random == 0){
+			handler.addEntity(new Zombie(r.nextInt(Game.WIDTH), r.nextInt(Game.HEIGHT),0, 0, EntityID.Zombie, 10, 10, 1, player, handler, game));
+		}else if(random == 1){
+			handler.addEntity(new Shooter(r.nextInt(Game.WIDTH), r.nextInt(Game.HEIGHT),0, 0, EntityID.Shooter, 10, 10, 1, player, handler, game));
+		}else if(random == 2){
+			handler.addEntity(new Slime(r.nextInt(Game.WIDTH), r.nextInt(Game.HEIGHT),0, 0, EntityID.Slime, 10, 10, 3, player, handler, game));
+		}else if(random == 3){
+			handler.addEntity(new Slime(r.nextInt(Game.WIDTH), r.nextInt(Game.HEIGHT),0, 0, EntityID.Slime, 10, 10, 4, player, handler, game));
+		}else if(random == 4){
+			handler.addEntity(new Bee(r.nextInt(Game.WIDTH), r.nextInt(Game.HEIGHT),0, 0, EntityID.Bee, 10, 10, 1, player, handler, game));
+		}else if(random == 5){
+			handler.addEntity(new Shooter((int)player.x, (int)player.y - 128,0, 0, EntityID.Shooter, 10, 10, 1, player, handler, game));
+		}
+		
+	}
+
+}
