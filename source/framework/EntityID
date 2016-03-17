@@ -1,0 +1,14 @@
+package com.tiledungeon.main;
+
+public enum EntityID {
+	Player,
+	Zombie,
+	Shooter,
+	Arrow,
+	Coin,
+	Turret,
+	Bee,
+	Slime,
+	Wall,
+	Tank
+}
