@@ -1,0 +1,58 @@
+package com.tiledungeon.main;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+
+public class Arrow extends Entity{
+	
+	private double velX;
+	private double velY;
+	private Handler handler;
+	private Game game;
+
+	public Arrow(double x, double y, double velX, double velY, EntityID id, int health, int maxHealth, int size, Handler handler, Game game) {
+		super(x, y, velX, velY, id, health, maxHealth, size);
+		this.velX = velX;
+		this.velY = velY;
+		this.handler = handler;
+		this.game = game;
+	}
+
+	public void tick() {
+		x += velX;
+		y += velY;
+		if(velX == 0 && velY == 0){
+			handler.removeEntity(this);
+		}
+		collision();
+	}
+	
+	private void collision(){
+		for(int i = 0; i < handler.entities.size(); i++){
+			Entity tempEntity = handler.entities.get(i);
+			if(tempEntity.getID() == EntityID.Zombie || tempEntity.getID() == EntityID.Shooter || tempEntity.getID() == EntityID.Bee || tempEntity.getID() == EntityID.Slime){
+				if(getBounds().intersects(tempEntity.getBounds())){
+					tempEntity.health -= 20;
+					handler.removeEntity(this);
+				}
+			}else if(tempEntity.getID() == EntityID.Player){
+				if(getBounds().intersects(tempEntity.getBounds())){
+					tempEntity.health--;
+					handler.removeEntity(this);
+				}
+			}
+			
+			
+		}
+	}
+	
+	public void render(Graphics g) {
+		g.drawImage(game.spriteSheet.getSubimage(0, 32, 8, 8), (int)x - 4 ,(int)y - 4, null);
+		//g.setColor(Color.lightGray);
+		//g.fillRect((int)x - 4,(int)y - 4, 8, 8);
+	}
+
+	public Rectangle getBounds() {
+		return new Rectangle((int) x - 4,(int) y - 4, 8, 8);
+	}
+
+}
