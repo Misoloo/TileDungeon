@@ -1,0 +1,88 @@
+package com.tiledungeon.main;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+
+public class Player extends Entity{
+	
+	Handler handler;
+	Game game;
+	public int enemiesKilled = 0;
+	public int bossesKilled = 0;
+	
+	public int attackCooldown = 0;
+	public   Boolean strafing = false;
+	
+	public Player(int x, int y, double velX, double velY, EntityID id, int health, int maxHealth,int size, Handler handler, Game game){
+		super(x, y, velY, velY, id, health, maxHealth, size);
+		this.handler = handler;
+		this.game = game;
+	}
+	
+	public Rectangle getBounds() {
+		return new Rectangle((int)x - 16,(int)y - 16, 32, 32);
+	}
+
+	public void tick() {
+		x += velX;
+		y += velY;
+		x = Game.clamp(x, 16, Game.WIDTH - 20);
+		y = Game.clamp(y, 16, Game.HEIGHT - 50);
+		collision();
+		if(health == 0)Game.state = Game.STATE.MENU_OVER;
+		if(attackCooldown > 0) attackCooldown--;
+	}
+	
+	public void attack1() {
+		if(attackCooldown == 0) {
+			attackCooldown = 50;
+			for(int i = 0; i < handler.entities.size(); i++){
+				Entity tempEntity = handler.entities.get(i);
+				double diffX = x - tempEntity.getX();
+				double diffY = y - tempEntity.getY();
+				double distance = Math.sqrt((diffX)*(diffX)+(diffY)*(diffY));
+				if(distance <= 96){
+					if(tempEntity.getID() == EntityID.Zombie || tempEntity.getID() == EntityID.Shooter || tempEntity.getID() == EntityID.Bee || tempEntity.getID() == EntityID.Turret || tempEntity.getID() == EntityID.Tank){
+						tempEntity.health -= 10;
+					}
+					if(tempEntity.getID() == EntityID.Slime){
+						tempEntity.health -= 10;
+					}
+				}
+				
+			}
+		}		
+	}
+	
+	public void attack2(){
+		if(strafing){
+			handler.addEntity(new Arrow(x - velX*10, y - velY*10, -velX * 3, -velY * 3, EntityID.Arrow, 1, 1, 10, handler, game));
+			handler.addEntity(new Arrow(x - velX*10, y - velY*10, -velX * 3, -velY * 2, EntityID.Arrow, 1, 1, 10, handler, game));
+			handler.addEntity(new Arrow(x - velX*10, y - velY*10, -velX * 2, -velY * 3, EntityID.Arrow, 1, 1, 10, handler, game));
+		}else{
+			handler.addEntity(new Arrow(x + velX*10, y + velY*10, velX * 3, velY * 3, EntityID.Arrow, 1, 1, 10, handler, game));
+			handler.addEntity(new Arrow(x + velX*10, y + velY*10, velX * 3, velY * 2, EntityID.Arrow, 1, 1, 10, handler, game));
+			handler.addEntity(new Arrow(x + velX*10, y + velY*10, velX * 2, velY * 3, EntityID.Arrow, 1, 1, 10, handler, game));
+		}
+		
+	}
+	
+	public void collision(){
+		for(int i = 0; i < handler.entities.size(); i++){
+			Entity tempEntity = handler.entities.get(i);
+			if(tempEntity.getID() == EntityID.Coin){
+				if(getBounds().intersects(tempEntity.getBounds())){
+					health++;
+					handler.removeEntity(tempEntity);
+				}
+			}
+			
+			
+		}
+	}
+	
+	public void render(Graphics g) {
+		
+		g.drawImage(game.spriteSheet.getSubimage(0, 0, 32, 32), game.viewX + (int)x - 16 ,game.viewY + (int)y - 16, null);
+		
+	}
+}
