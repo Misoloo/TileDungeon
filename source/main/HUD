@@ -1,0 +1,76 @@
+package com.tiledungeon.main;
+import java.awt.Color;
+import java.awt.Graphics;
+
+public class HUD {
+	
+	public int time;
+	private int bossHealth;
+	private int maxBossHealth;
+	private double bossHealthPercent;
+	
+	private Player player;
+	private Game game;
+	private Spawn spawner;
+	private Handler handler;
+	
+	public HUD(Player player, Game game, Spawn spawner, Handler handler){
+		this.player = player;
+		this.game = game;
+		this.spawner = spawner;
+		this.handler = handler;
+	}
+
+	public void tick() {
+		for(int i = 0; i < handler.entities.size(); i++){
+			Entity tempEntity = handler.entities.get(i);
+			tempEntity.tick();
+			if(tempEntity.getID() == EntityID.Turret || tempEntity.getID() == EntityID.Tank){
+				bossHealth = tempEntity.health;
+				maxBossHealth = tempEntity.maxHealth;
+				bossHealthPercent = 100 * bossHealth/maxBossHealth;
+			}
+		}
+		
+		time++;
+		player.setHealth((int)Game.clamp(player.getHealth(), 0, player.maxHealth));
+	}
+
+	public void render(Graphics g) {
+		
+		if(spawner.bossSpawned == true){
+			g.setColor(Color.lightGray);
+			g.fillRect(10, 140, 30, 204);
+			g.setColor(Color.gray);
+			g.fillRect(12, 142, 26, 200);
+			g.setColor(Color.red);
+			g.fillRect(12, 342 - (int)bossHealthPercent * 2, 26, (int)bossHealthPercent * 2);
+			g.setColor(Color.black);
+			g.drawString(String.valueOf(bossHealth), 15, 340);
+			
+		}
+		
+		g.setColor(Color.lightGray);
+		g.fillRect(10, 10, player.maxHealth * 12 + 4, 20);
+		g.setColor(Color.gray);
+		g.fillRect(12, 12, player.maxHealth * 12, 16);
+		g.setColor(Color.green);
+		g.fillRect(12, 12, player.health * 12, 16);
+		g.setColor(Color.black);
+		g.drawString(String.valueOf(player.health), 15, 25);
+		
+		g.setColor(Color.red);
+		g.fillRect(10, 34, 6 * player.attackCooldown, 8);
+		
+		g.setColor(Color.white);
+		g.drawString("Fps =  " + String.valueOf(game.fps), 10, 55);
+		g.drawString("Time =  " + String.valueOf(time), 10, 70);
+		g.drawString("EntityCount =  " + String.valueOf(handler.entities.size()), 10, 85);
+		g.drawString("x =  " + String.valueOf(player.x) + "     y =  " + String.valueOf(player.y), 10, 100);
+		g.drawString("Score =  " + String.valueOf(player.enemiesKilled), 10, 115);
+		g.drawString("Level =  " + String.valueOf(player.bossesKilled + 1), 10, 130);
+
+		
+	}
+
+}
