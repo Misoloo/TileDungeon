@@ -1,0 +1,138 @@
+package com.tiledungeon.main;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+
+public class Menu {
+	
+	private Player player;
+	private Game game;
+	
+	private int red = 0;
+	private int green = 0;
+	private int blue = 255;
+	
+	private Color titleColor;
+	
+	private int animationTime = 0;
+	
+	private Rectangle playButton = new Rectangle(Game.WIDTH/2 - 100, 160, 200, 40);
+	private Rectangle optionsButton = new Rectangle(Game.WIDTH/2 - 100, 210, 200, 40);
+	private Rectangle quitButton = new Rectangle(Game.WIDTH/2 - 100, 260, 200, 40);
+	
+	public Menu(Player player, Game game){
+		this.player = player;
+		this.game = game;
+	}
+	
+	public void tick(){
+		if(animationTime <= 60){
+			red += 3;
+			blue -= 3;
+		}else if(animationTime <= 120){
+			green += 3;
+			red -= 3;
+		}else if(animationTime <= 180){
+			blue += 3;
+			green -= 3;
+		}
+		
+		titleColor = new Color(red, green, blue);
+		
+		animationTime++;
+		if(animationTime == 181) animationTime = 0;
+	}
+	
+	public void render(Graphics g){
+		
+		Graphics2D g2d = (Graphics2D) g;
+		
+		if(Game.state == Game.STATE.MENU_MAIN){
+			/////Main Menu/////
+			
+			Font fnt0 = new Font("arial", Font.BOLD, 50);
+			g.setFont(fnt0);
+			g.setColor(titleColor);
+			g.drawString("Dungeon Fighter", Game.WIDTH/2 - 200, Game.HEIGHT/4);
+			
+			g.setColor(Color.white);
+			
+			Font fnt1 = new Font("arial", Font.BOLD, 30);
+			g.setFont(fnt1);
+			g.drawString("play", playButton.x + 70, playButton.y + 30);
+			g2d.draw(playButton);
+			g.drawString("options", optionsButton.x + 45, optionsButton.y + 30);
+			g2d.draw(optionsButton);
+			g.drawString("quit", quitButton.x + 70, quitButton.y + 30);
+			g2d.draw(quitButton);
+		}else if(Game.state == Game.STATE.MENU_ESC){
+			/////Pause/////
+			
+			Font fnt0 = new Font("arial", Font.BOLD, 50);
+			g.setFont(fnt0);
+			g.setColor(titleColor);
+			g.drawString("Dungeon Fighter", Game.WIDTH/2 - 200, Game.HEIGHT/4);
+			
+			g.setColor(Color.white);
+			
+			Font fnt1 = new Font("arial", Font.BOLD, 30);
+			g.setFont(fnt1);
+			g.drawString("back", playButton.x + 70, playButton.y + 30);
+			g2d.draw(playButton);
+			//g.drawString("options", optionsButton.x + 45, optionsButton.y + 30);
+			//g2d.draw(optionsButton);
+			g.drawString("quit", quitButton.x + 70, quitButton.y + 30);
+			g2d.draw(quitButton);
+		}else if(Game.state == Game.STATE.MENU_OVER){
+			/////Game Over/////
+			
+			Font fnt0 = new Font("arial", Font.BOLD, 50);
+			g.setFont(fnt0);
+			g.setColor(titleColor);
+			g.drawString("Game Over!", Game.WIDTH/2 - 135, Game.HEIGHT/4);
+			
+			Font fnt1 = new Font("arial", Font.PLAIN, 20);
+			g.setFont(fnt1);
+			g.setColor(Color.white);
+			g.drawString("Score: " + player.enemiesKilled, Game.WIDTH/2 - 50, Game.HEIGHT/4 + 30);
+			
+			Font fnt2 = new Font("arial", Font.BOLD, 30);
+			g.setFont(fnt2);
+			//g.drawString("keep playing", playButton.x + 13, playButton.y + 30);
+			//g2d.draw(playButton);
+			//g.drawString("options", optionsButton.x + 45, optionsButton.y + 30);
+			//g2d.draw(optionsButton);
+			g.drawString("quit", quitButton.x + 70, quitButton.y + 30);
+			g2d.draw(quitButton);
+		}else if(Game.state == Game.STATE.OPTIONS){
+			/////Options/////
+			
+			Font fnt0 = new Font("arial", Font.BOLD, 50);
+			g.setFont(fnt0);
+			g.setColor(titleColor);
+			g.drawString("Options", Game.WIDTH/2 - 100, Game.HEIGHT/4);
+			
+			g.setColor(Color.white);
+			
+			Font fnt1 = new Font("arial", Font.BOLD, 30);
+			g.setFont(fnt1);
+			g.drawString("coming soon...", Game.WIDTH/2 - 100, 200);
+			
+			
+			/*
+			Font fnt1 = new Font("arial", Font.BOLD, 30);
+			g.setFont(fnt1);
+			g.drawString(playBack, playButton.x + 70, playButton.y + 30);
+			g2d.draw(playButton);
+			g.drawString("options", optionsButton.x + 45, optionsButton.y + 30);
+			g2d.draw(optionsButton);
+			*/
+			g.drawString("back", quitButton.x + 70, quitButton.y + 30);
+			g2d.draw(quitButton);
+			
+		}
+	}
+	
+}
