@@ -1,0 +1,71 @@
+package com.tiledungeon.main;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+
+public class Shooter extends Entity{
+	
+	private Handler handler;
+	private Game game;
+	
+	private double diffX = 0;
+	private double diffY = 0;
+	private double distance = 0;
+	
+	private Player player;
+	private int attackCooldown = 0;
+	
+	public Shooter(int x, int y, double velX, double velY, EntityID id, int health, int maxHealth, int size, Player player, Handler handler, Game game){
+		super(x, y, velY, velY, id, health, maxHealth, size);
+		this.handler = handler;
+		this.player = player;
+		this.game = game;
+	}
+	
+	public Rectangle getBounds() {
+		return new Rectangle((int)x - 16,(int)y - 16, 32, 32);
+	}
+
+	public void tick() {
+		
+		x += velX;
+		y += velY;
+		
+		this.diffX = x - player.getX();
+		this.diffY = y - player.getY();
+		this.distance = Math.sqrt((diffX)*(diffX)+(diffY)*(diffY));
+		
+		if(distance <= 128){
+			velX = (1 / distance * diffX);
+			velY = (1 / distance * diffY);
+		}else if(distance <= 256){
+			velX = (-1 / distance * diffX);
+			velY = (-1 / distance * diffY);
+		}
+		
+		if(attackCooldown > 0) attackCooldown--;
+		else if(attackCooldown == 0) attack();
+			
+		if(health <= 0) {
+			handler.addEntity(new Coin(x, y, 0, 0, EntityID.Coin, -1, -1, 1, game));
+			handler.removeEntity(this);
+			player.enemiesKilled++;
+			
+		}
+		
+		x = Game.clamp(x, 16, Game.WIDTH - 48);
+		y = Game.clamp(y, 16, Game.HEIGHT - 64);
+		
+	}
+
+	private void attack() {
+			handler.addEntity(new Arrow(x + velX*10, y + velY*10, velX * 5, velY * 5, EntityID.Arrow, 1, 1, 1, handler, game));
+		attackCooldown = 60;
+	}
+
+	public void render(Graphics g) {
+		g.drawImage(game.spriteSheet.getSubimage(64, 0, 32, 32), (int)x - 16 ,(int)y - 16, null);
+		//g.setColor(Color.white);
+		//g.fillRect((int)x - 16, (int)y - 16, 32, 32);
+	}
+	
+}
