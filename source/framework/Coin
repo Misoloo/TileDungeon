@@ -1,0 +1,31 @@
+package com.tiledungeon.main;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+
+public class Coin extends Entity{
+	
+	private Game game;
+
+	public Coin(double x, double y, double velX2, double velY2, EntityID id, int health, int maxHealth, int size, Game game) {
+		super(x, y, velX2, velY2, id, health, maxHealth, size);
+		this.game = game;
+	}
+
+	public void tick() {
+		
+	}
+
+	public void render(Graphics g) {
+		g.drawImage(game.spriteSheet.getSubimage(8, 32, 8, 8), (int)x - 4 ,(int)y - 4, null);
+		//g.setColor(Color.yellow);
+		//g.fillRect((int)x - 4, (int)y - 4, 8, 8);
+	}
+	public void damage(int health) {
+		
+	}
+
+	public Rectangle getBounds() {
+		return new Rectangle((int)x - 4,(int)y - 4, 8, 8);
+	}
+
+}
